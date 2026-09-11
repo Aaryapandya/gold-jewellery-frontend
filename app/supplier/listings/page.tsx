@@ -99,7 +99,7 @@ export default function SupplierListingsPage() {
 
         {loading ? (
           <div className="flex justify-center py-24"><Spinner size="lg" /></div>
-        ) : !result || result.content.length === 0 ? (
+        ) : !result || !result.content || result.content.length === 0 ? (
           <EmptyState
             icon={Gem}
             title="No listings yet"

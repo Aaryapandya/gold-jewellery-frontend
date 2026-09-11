@@ -113,7 +113,7 @@ function AdminJewelleryContent() {
                       <div className="flex-1 min-w-0">
                         <div className="mb-1 flex flex-wrap items-center gap-2">
                           <Badge className={meta.colour}>{meta.label}</Badge>
-                          {item.isAvailable ? (
+                          {item.available ? (
                             <Badge className="bg-green-100 text-green-700">Available</Badge>
                           ) : (
                             <Badge className="bg-gray-100 text-gray-500">Booked</Badge>

@@ -22,6 +22,8 @@ export interface AuthResponse {
   email: string;
   name: string;
   role: UserRole;
+  /** True when admin has approved this user's identity documents */
+  isVerified: boolean;
 }
 
 export interface RegisterRequest {
@@ -54,7 +56,7 @@ export interface UserProfile {
   role: UserRole;
   emailVerified: boolean;
   mobileVerified: boolean;
-  isActive: boolean;
+  active: boolean;
   address: string | null;
   city: string | null;
   pincode: string | null;
@@ -95,12 +97,12 @@ export interface JewelleryItem {
   pincode: string;
   latitude: number;
   longitude: number;
-  isAvailable: boolean;
+  available: boolean;
   status: JewelleryStatus;
   imageUrls: string[];
   billUrls: string[];
   createdAt: string;
-  distanceKm?: number;
+  distanceKm?: number | null;
 }
 
 export interface CreateJewelleryRequest {

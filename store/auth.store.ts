@@ -17,7 +17,12 @@ interface AuthState {
   name: string | null;
   email: string | null;
   isAuthenticated: boolean;
+  isVerified: boolean;
+  /** True once hydrate() has finished reading from cookies. Prevents AuthGuard
+   *  from acting on default store values before cookies are loaded. */
+  hydrated: boolean;
   setSession: (response: AuthResponse) => void;
+  setVerified: (verified: boolean) => void;
   clearSession: () => void;
   hydrate: () => void;
 }
@@ -29,11 +34,16 @@ export const useAuthStore = create<AuthState>((set) => ({
   name: null,
   email: null,
   isAuthenticated: false,
+  isVerified: false,
+  hydrated: false,
 
   setSession: (response: AuthResponse) => {
     Cookies.set("accessToken", response.accessToken, COOKIE_OPTS);
     Cookies.set("userRole", response.role, COOKIE_OPTS);
     Cookies.set("userId", String(response.userId), COOKIE_OPTS);
+    Cookies.set("isVerified", String(response.isVerified ?? false), COOKIE_OPTS);
+    if (response.name) Cookies.set("userName", response.name, COOKIE_OPTS);
+    if (response.email) Cookies.set("userEmail", response.email, COOKIE_OPTS);
 
     set({
       token: response.accessToken,
@@ -42,13 +52,22 @@ export const useAuthStore = create<AuthState>((set) => ({
       name: response.name,
       email: response.email,
       isAuthenticated: true,
+      isVerified: response.isVerified ?? false,
     });
+  },
+
+  setVerified: (verified: boolean) => {
+    Cookies.set("isVerified", String(verified), COOKIE_OPTS);
+    set({ isVerified: verified });
   },
 
   clearSession: () => {
     Cookies.remove("accessToken");
     Cookies.remove("userRole");
     Cookies.remove("userId");
+    Cookies.remove("isVerified");
+    Cookies.remove("userName");
+    Cookies.remove("userEmail");
 
     set({
       token: null,
@@ -57,6 +76,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       name: null,
       email: null,
       isAuthenticated: false,
+      isVerified: false,
     });
   },
 
@@ -68,6 +88,9 @@ export const useAuthStore = create<AuthState>((set) => ({
     const token = Cookies.get("accessToken");
     const role = Cookies.get("userRole") as UserRole | undefined;
     const userId = Cookies.get("userId");
+    const isVerified = Cookies.get("isVerified") === "true";
+    const name = Cookies.get("userName") ?? null;
+    const email = Cookies.get("userEmail") ?? null;
 
     if (token && role && userId) {
       set({
@@ -75,7 +98,15 @@ export const useAuthStore = create<AuthState>((set) => ({
         role,
         userId: Number(userId),
         isAuthenticated: true,
+        isVerified,
+        name,
+        email,
+        hydrated: true,
       });
+    } else {
+      // No valid session in cookies — mark hydration complete so guards
+      // can redirect to /login instead of spinning indefinitely.
+      set({ hydrated: true });
     }
   },
 }));

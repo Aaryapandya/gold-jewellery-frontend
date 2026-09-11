@@ -248,8 +248,8 @@ export default function BuyerProfilePage() {
                 <Badge className={profile.mobileVerified ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}>
                   {profile.mobileVerified ? "Mobile Verified" : "Mobile Unverified"}
                 </Badge>
-                <Badge className={profile.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}>
-                  {profile.isActive ? "Active" : "Inactive"}
+                <Badge className={profile.active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}>
+                  {profile.active ? "Active" : "Inactive"}
                 </Badge>
               </div>
               <p className="mt-1 text-xs text-gray-400">Member since {formatDate(profile.createdAt)}</p>

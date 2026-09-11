@@ -25,22 +25,22 @@ export const adminService = {
     page?: number;
     size?: number;
   } = {}): Promise<PagedResponse<UserProfile>> {
-    const { data } = await apiClient.get<PagedResponse<UserProfile>>(
+    const { data } = await apiClient.get<ApiResponse<PagedResponse<UserProfile>>>(
       "/admin/users",
       { params: { page: 0, size: 20, ...params } }
     );
-    return data;
+    return { ...data.data, content: data.data.content ?? [] };
   },
 
   async getPendingVerificationUsers(
     page = 0,
     size = 20
   ): Promise<PagedResponse<UserProfile>> {
-    const { data } = await apiClient.get<PagedResponse<UserProfile>>(
+    const { data } = await apiClient.get<ApiResponse<PagedResponse<UserProfile>>>(
       "/admin/users/pending-verification",
       { params: { page, size } }
     );
-    return data;
+    return { ...data.data, content: data.data.content ?? [] };
   },
 
   async getUserById(userId: number): Promise<UserProfile> {
@@ -90,11 +90,11 @@ export const adminService = {
     page?: number;
     size?: number;
   } = {}): Promise<PagedResponse<JewelleryItem>> {
-    const { data } = await apiClient.get<PagedResponse<JewelleryItem>>(
+    const { data } = await apiClient.get<ApiResponse<PagedResponse<JewelleryItem>>>(
       "/admin/jewellery",
       { params: { page: 0, size: 20, ...params } }
     );
-    return data;
+    return { ...data.data, content: data.data.content ?? [] };
   },
 
   async changeJewelleryStatus(
@@ -112,11 +112,11 @@ export const adminService = {
   // ─── Bookings ───────────────────────────────────────────────────────────────
 
   async getAllBookings(page = 0, size = 20): Promise<PagedResponse<BookingItem>> {
-    const { data } = await apiClient.get<PagedResponse<BookingItem>>(
+    const { data } = await apiClient.get<ApiResponse<PagedResponse<BookingItem>>>(
       "/admin/bookings",
       { params: { page, size } }
     );
-    return data;
+    return { ...data.data, content: data.data.content ?? [] };
   },
 
   async cancelBooking(

@@ -57,9 +57,22 @@ function RegisterForm() {
     },
   });
 
+  const { isVerified } = useAuthStore();
+
   useEffect(() => {
-    if (isAuthenticated) router.replace("/explore");
-  }, [isAuthenticated, router]);
+    if (isAuthenticated) {
+      // Already logged in: send verified users home, unverified to pending
+      if (isVerified) {
+        const home =
+          useAuthStore.getState().role === "SUPPLIER"
+            ? "/supplier/listings"
+            : "/explore";
+        router.replace(home);
+      } else {
+        router.replace("/onboarding/verification");
+      }
+    }
+  }, [isAuthenticated, isVerified, router]);
 
   const onSubmit = async (values: FormValues) => {
     try {
@@ -71,11 +84,10 @@ function RegisterForm() {
         role: values.role,
       });
       setSession(res);
-      toast.success(`Welcome, ${res.name}! Account created.`);
+      toast.success(`Welcome, ${res.name}! Let's complete your profile.`);
 
-      const home =
-        res.role === "SUPPLIER" ? "/supplier/listings" : "/explore";
-      router.push(home);
+      // New users always go through the onboarding flow first
+      router.push("/onboarding/address");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Registration failed");
     }

@@ -38,9 +38,9 @@ export default function SupplierBookingsPage() {
   }, [page]);
 
   const selectedStatuses = STATUS_TABS[activeTab].statuses;
-  const filteredBookings = result?.content.filter((b) =>
+  const filteredBookings = (result?.content ?? []).filter((b) =>
     !selectedStatuses ? true : selectedStatuses.includes(b.status)
-  ) ?? [];
+  );
 
   // Count per status for tab badges
   const countMap = (result?.content ?? []).reduce<Partial<Record<BookingStatus, number>>>(
@@ -61,7 +61,7 @@ export default function SupplierBookingsPage() {
           {STATUS_TABS.map((tab, idx) => {
             const count = tab.statuses
               ? tab.statuses.reduce((s, st) => s + (countMap[st] ?? 0), 0)
-              : result?.content.length ?? 0;
+              : result?.content?.length ?? 0;
 
             return (
               <button

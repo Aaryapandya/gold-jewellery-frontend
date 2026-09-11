@@ -46,7 +46,7 @@ export default function BuyerBookingsPage() {
           <div className="flex justify-center py-24">
             <Spinner size="lg" />
           </div>
-        ) : !result || result.content.length === 0 ? (
+        ) : !result || (result.content?.length ?? 0) === 0 ? (
           <EmptyState
             icon={ShoppingBag}
             title="No bookings yet"
@@ -60,7 +60,7 @@ export default function BuyerBookingsPage() {
         ) : (
           <>
             <div className="space-y-3">
-              {result.content.map((b) => (
+              {(result.content ?? []).map((b) => (
                 <BookingCard key={b.id} booking={b} viewAs="BUYER" />
               ))}
             </div>

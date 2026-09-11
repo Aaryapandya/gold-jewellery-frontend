@@ -54,13 +54,13 @@ function AdminUsersContent() {
   const handleToggleActive = async (user: UserProfile) => {
     setTogglingId(user.id);
     try {
-      const updated = await adminService.setUserActive(user.id, !user.isActive);
+      const updated = await adminService.setUserActive(user.id, !user.active);
       setResult((prev) =>
         prev
           ? { ...prev, content: prev.content.map((u) => (u.id === updated.id ? updated : u)) }
           : prev
       );
-      toast.success(`User ${updated.isActive ? "activated" : "deactivated"}.`);
+      toast.success(`User ${updated.active ? "activated" : "deactivated"}.`);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to toggle user");
     } finally {

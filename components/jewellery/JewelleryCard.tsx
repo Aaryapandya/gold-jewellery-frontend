@@ -39,7 +39,7 @@ export default function JewelleryCard({
 
         {/* Availability pill */}
         <div className="absolute top-2 right-2">
-          {item.isAvailable ? (
+          {item.available ? (
             <span className="rounded-full bg-green-500 px-2 py-0.5 text-xs font-medium text-white">
               Available
             </span>
@@ -76,7 +76,7 @@ export default function JewelleryCard({
             <Scale className="h-3.5 w-3.5" />
             {item.weightInGrams}g
           </span>
-          {item.distanceKm !== undefined && (
+          {item.distanceKm != null && (
             <span className="text-blue-600">
               {item.distanceKm.toFixed(1)} km away
             </span>

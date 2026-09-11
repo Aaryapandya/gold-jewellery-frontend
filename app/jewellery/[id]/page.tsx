@@ -124,7 +124,7 @@ function BookingForm({
     );
   }
 
-  if (!jewellery.isAvailable) {
+  if (!jewellery.available) {
     return (
       <Card>
         <div className="text-center">
@@ -394,7 +394,7 @@ export default function JewelleryDetailPage() {
             <div className="mb-2 flex flex-wrap items-center gap-2">
               <Badge className="bg-amber-100 text-amber-700">{item.category}</Badge>
               <Badge className={statusMeta.colour}>{statusMeta.label}</Badge>
-              {item.isAvailable ? (
+              {item.available ? (
                 <Badge className="bg-green-100 text-green-700">Available</Badge>
               ) : (
                 <Badge className="bg-gray-100 text-gray-600">Booked</Badge>
@@ -425,7 +425,7 @@ export default function JewelleryDetailPage() {
               </div>
             </div>
 
-            {item.distanceKm !== undefined && (
+            {item.distanceKm != null && (
               <p className="mt-4 text-xs text-blue-600 font-medium">
                 📍 {item.distanceKm.toFixed(1)} km from your location
               </p>

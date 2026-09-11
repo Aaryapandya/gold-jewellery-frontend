@@ -28,22 +28,22 @@ export const bookingService = {
     page = 0,
     size = 20
   ): Promise<PagedResponse<BookingItem>> {
-    const { data } = await apiClient.get<PagedResponse<BookingItem>>(
+    const { data } = await apiClient.get<ApiResponse<PagedResponse<BookingItem>>>(
       "/bookings/my/buyer",
       { params: { page, size } }
     );
-    return data;
+    return { ...data.data, content: data.data.content ?? [] };
   },
 
   async getMySupplierBookings(
     page = 0,
     size = 20
   ): Promise<PagedResponse<BookingItem>> {
-    const { data } = await apiClient.get<PagedResponse<BookingItem>>(
+    const { data } = await apiClient.get<ApiResponse<PagedResponse<BookingItem>>>(
       "/bookings/my/supplier",
       { params: { page, size } }
     );
-    return data;
+    return { ...data.data, content: data.data.content ?? [] };
   },
 
   async approve(id: number): Promise<BookingItem> {

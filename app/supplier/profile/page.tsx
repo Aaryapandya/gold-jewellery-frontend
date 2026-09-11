@@ -179,8 +179,8 @@ export default function SupplierProfilePage() {
                 <Badge className={profile.emailVerified ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}>
                   {profile.emailVerified ? "Email ✓" : "Email Unverified"}
                 </Badge>
-                <Badge className={profile.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}>
-                  {profile.isActive ? "Active" : "Inactive"}
+                <Badge className={profile.active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}>
+                  {profile.active ? "Active" : "Inactive"}
                 </Badge>
               </div>
               <p className="mt-1 text-xs text-gray-400">Member since {formatDate(profile.createdAt)}</p>

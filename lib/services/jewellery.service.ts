@@ -27,11 +27,11 @@ export const jewelleryService = {
   async getNearby(
     params: NearbySearchParams
   ): Promise<PagedResponse<JewelleryItem>> {
-    const { data } = await apiClient.get<PagedResponse<JewelleryItem>>(
+    const { data } = await apiClient.get<ApiResponse<PagedResponse<JewelleryItem>>>(
       "/jewellery/nearby",
       { params }
     );
-    return data;
+    return { ...data.data, content: data.data.content ?? [] };
   },
 
   async getById(id: number): Promise<JewelleryItem> {
@@ -42,11 +42,14 @@ export const jewelleryService = {
   },
 
   async getMine(params: MyJewelleryParams = {}): Promise<PagedResponse<JewelleryItem>> {
-    const { data } = await apiClient.get<PagedResponse<JewelleryItem>>(
+    const { data } = await apiClient.get<ApiResponse<PagedResponse<JewelleryItem>>>(
       "/jewellery/my",
       { params: { page: 0, size: 20, sortBy: "createdAt", sortDir: "desc", ...params } }
     );
-    return data;
+    return {
+      ...data.data,
+      content: data.data.content ?? [],
+    };
   },
 
   async create(payload: CreateJewelleryRequest): Promise<JewelleryItem> {

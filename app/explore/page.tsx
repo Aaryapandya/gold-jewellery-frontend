@@ -79,7 +79,7 @@ export default function ExplorePage() {
         size: DEFAULT_PAGE_SIZE,
       });
 
-      setItems(response.content);
+      setItems(response.content ?? []);
       setPageData(response);
     } catch (err) {
       const message =
@@ -296,7 +296,7 @@ export default function ExplorePage() {
               description="Allow device location access or enter valid latitude and longitude manually to continue."
             />
           </div>
-        ) : items.length === 0 ? (
+        ) : (items?.length ?? 0) === 0 ? (
           <div className="rounded-2xl border border-dashed border-gray-300 bg-white">
             <EmptyState
               icon={Search}

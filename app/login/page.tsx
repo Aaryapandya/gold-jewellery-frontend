@@ -11,7 +11,28 @@ import { Gem } from "lucide-react";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import { authService } from "@/lib/services/auth.service";
+import { userService } from "@/lib/services/user.service";
 import { useAuthStore } from "@/store/auth.store";
+import { UserProfile } from "@/types";
+
+/** Returns the first incomplete onboarding step URL, or null if all done. */
+function getIncompleteOnboardingStep(profile: UserProfile): string | null {
+  if (!profile.address || !profile.city || !profile.pincode) {
+    return "/onboarding/address";
+  }
+  if (
+    !profile.aadhaarFrontUrl ||
+    !profile.aadhaarBackUrl ||
+    !profile.panFrontUrl ||
+    !profile.panBackUrl
+  ) {
+    return "/onboarding/documents";
+  }
+  if (profile.familyMembers.length === 0) {
+    return "/onboarding/family";
+  }
+  return null;
+}
 
 const schema = z.object({
   email: z.string().email("Invalid email address"),
@@ -22,7 +43,7 @@ type FormValues = z.infer<typeof schema>;
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setSession, isAuthenticated, role } = useAuthStore();
+  const { setSession, isAuthenticated, role, isVerified } = useAuthStore();
 
   const {
     register,
@@ -32,15 +53,24 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated && role) {
-      const home =
-        role === "ADMIN"
-          ? "/admin/dashboard"
-          : role === "SUPPLIER"
-          ? "/supplier/listings"
-          : "/explore";
-      router.replace(home);
+      if (role === "ADMIN") {
+        router.replace("/admin/dashboard");
+      } else if (!isVerified) {
+        // Unverified users — check which onboarding step they left off at
+        userService
+          .getMyProfile()
+          .then((profile) => {
+            const incompleteStep = getIncompleteOnboardingStep(profile);
+            router.replace(incompleteStep ?? "/onboarding/verification");
+          })
+          .catch(() => {
+            router.replace("/onboarding/address");
+          });
+      } else {
+        router.replace(role === "SUPPLIER" ? "/supplier/listings" : "/explore");
+      }
     }
-  }, [isAuthenticated, role, router]);
+  }, [isAuthenticated, role, isVerified, router]);
 
   const onSubmit = async (values: FormValues) => {
     try {
@@ -48,13 +78,21 @@ export default function LoginPage() {
       setSession(res);
       toast.success(`Welcome back, ${res.name}!`);
 
-      const home =
-        res.role === "ADMIN"
-          ? "/admin/dashboard"
-          : res.role === "SUPPLIER"
-          ? "/supplier/listings"
-          : "/explore";
-      router.push(home);
+      if (res.role === "ADMIN") {
+        router.push("/admin/dashboard");
+      } else if (!res.isVerified) {
+        // Not yet approved by admin — check which onboarding step they left off at
+        try {
+          const profile = await userService.getMyProfile();
+          const incompleteStep = getIncompleteOnboardingStep(profile);
+          router.push(incompleteStep ?? "/onboarding/verification");
+        } catch {
+          // If profile fetch fails, fall back to the start of onboarding
+          router.push("/onboarding/address");
+        }
+      } else {
+        router.push(res.role === "SUPPLIER" ? "/supplier/listings" : "/explore");
+      }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Login failed");
     }
