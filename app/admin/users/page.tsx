@@ -151,8 +151,8 @@ function AdminUsersContent() {
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <Badge className={user.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}>
-                          {user.isActive ? "Active" : "Inactive"}
+                        <Badge className={user.active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}>
+                          {user.active ? "Active" : "Inactive"}
                         </Badge>
                       </td>
                       <td className="px-4 py-3 text-xs text-gray-500">
@@ -165,12 +165,12 @@ function AdminUsersContent() {
                           </Link>
                           {user.role !== "ADMIN" && (
                             <Button
-                              variant={user.isActive ? "danger" : "secondary"}
+                              variant={user.active ? "danger" : "secondary"}
                               size="sm"
                               loading={togglingId === user.id}
                               onClick={() => handleToggleActive(user)}
                             >
-                              {user.isActive ? "Deactivate" : "Activate"}
+                              {user.active ? "Deactivate" : "Activate"}
                             </Button>
                           )}
                         </div>

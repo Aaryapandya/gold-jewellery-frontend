@@ -82,8 +82,8 @@ export default function AdminUserDetailPage() {
                   user.role === "ADMIN" ? "bg-purple-100 text-purple-700" :
                   user.role === "SUPPLIER" ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-700"
                 }>{user.role}</Badge>
-                <Badge className={user.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}>
-                  {user.isActive ? "Active" : "Inactive"}
+                <Badge className={user.active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}>
+                  {user.active ? "Active" : "Inactive"}
                 </Badge>
                 <Badge className={user.emailVerified ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}>
                   Email {user.emailVerified ? "✓" : "✗"}
@@ -144,11 +144,11 @@ export default function AdminUserDetailPage() {
             <div className="flex flex-wrap gap-3">
               {/* Activate / Deactivate */}
               <Button
-                variant={user.isActive ? "danger" : "primary"}
+                variant={user.active ? "danger" : "primary"}
                 loading={actionLoading === "active"}
-                onClick={() => run("active", () => adminService.setUserActive(user.id, !user.isActive))}
+                onClick={() => run("active", () => adminService.setUserActive(user.id, !user.active))}
               >
-                {user.isActive ? "Deactivate Account" : "Activate Account"}
+                {user.active ? "Deactivate Account" : "Activate Account"}
               </Button>
 
               {/* Email verification */}
