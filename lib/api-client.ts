@@ -15,7 +15,7 @@ import axios, {
 import Cookies from "js-cookie";
 
 const BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080/api/v1";
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://alluring-embrace-production.up.railway.app/api/v1";
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
